@@ -1,0 +1,37 @@
+import EditorInput from '@/components/editor/editor-input';
+import React from 'react';
+import { ThemeProvider } from "@/components/theme-provider"
+import Navbar from '@/components/editor/navbar';
+import {Space_Grotesk, Host_Grotesk} from 'next/font/google'
+import { cn } from '@/lib/utils';
+import EditorLinks from '@/components/links-tab';
+const h = Host_Grotesk({
+    subsets:["latin"]
+})
+const s= Space_Grotesk({
+    subsets:["latin"]
+})
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return (
+   <div suppressHydrationWarning className='flex h-screen  flex-col min-h-screen w-full items-center'>
+     <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Navbar/>
+              <main className={cn('w-full p-3 flex-1 flex  overflow-y-auto', h.className, s.className)}>
+                  <EditorInput/>
+
+           <div className="right flex-1 h-full  flex flex-col gap-4 px-3">
+             <EditorLinks/>
+             {children}
+           </div>
+              </main>
+          </ThemeProvider>
+   </div>
+  );
+};
+
+export default Layout;

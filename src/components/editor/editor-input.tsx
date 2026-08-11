@@ -1,0 +1,88 @@
+"use client"
+
+import { useState } from "react"
+import BlurVideoEditor from "./blur-video-editor"
+import { GenerateButton } from "./generate-button"
+import BlurImageEditor from "./blur-img-editor"
+
+const tabs = [
+  {
+    value: "video",
+    label: "Video",
+    component: <BlurVideoEditor />,
+  },
+  {
+    value: "image",
+    label: "Image",
+    component:<BlurImageEditor/>,
+  },
+  {
+    value: "license-plate",
+    label: "License Plate",
+    component: null,
+  },
+] as const
+
+const EditorInput = () => {
+  const [active, setActive] = useState<string>(tabs[0].value)
+
+  const activeTab = tabs.find((tab) => tab.value === active)
+
+  return (
+    <div className="flex h-full flex-col border overflow-hidden max-w-[300px] rounded-2xl bg-sidebar">
+      {/* Tabs header */}
+      <div className="shrink-0 border-b border-white/[0.06]">
+        <div className="flex items-center justify-between gap-7 px-5">
+          {tabs.map((tab) => {
+            const isActive = active === tab.value
+
+            return (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setActive(tab.value)}
+                className={`
+                  relative
+                  cursor-pointer
+                  shrink-0
+                  select-none
+                  whitespace-nowrap
+                  bg-transparent
+                  py-3
+                  text-[15px]
+                  font-medium
+                  outline-none
+                  transition-colors
+                  hover:bg-transparent
+                  focus:bg-transparent
+                  focus:outline-none
+                  ${
+                    isActive
+                      ? "text-white"
+                      : "text-white/45 hover:text-white/70"
+                  }
+                `}
+              >
+                {tab.label}
+
+                {isActive && (
+                  <div className="absolute inset-x-0 top-full h-[2px] bg-white" />
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="min-h-0 flex-1 w-full overflow-y-auto">
+        {activeTab?.component}
+      </div>
+     <div className="generate-btn p-3">
+       <GenerateButton/>
+     </div>
+    </div>
+  )
+}
+
+export default EditorInput
