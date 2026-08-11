@@ -5,6 +5,8 @@ import Navbar from '@/components/editor/navbar';
 import {Space_Grotesk, Host_Grotesk} from 'next/font/google'
 import { cn } from '@/lib/utils';
 import EditorLinks from '@/components/links-tab';
+import ReactQueryClientProvider from '@/components/query-client-provider';
+import AuthProvider from '@/components/auth-provider';
 const h = Host_Grotesk({
     subsets:["latin"]
 })
@@ -13,7 +15,9 @@ const s= Space_Grotesk({
 })
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-   <div suppressHydrationWarning className='flex h-screen  flex-col min-h-screen w-full items-center'>
+   <ReactQueryClientProvider>
+    <AuthProvider>
+      <div suppressHydrationWarning className='flex h-screen  flex-col min-h-screen w-full items-center'>
      <ThemeProvider
             attribute="class"
             defaultTheme="dark"
@@ -31,6 +35,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               </main>
           </ThemeProvider>
    </div>
+    </AuthProvider>
+   </ReactQueryClientProvider>
   );
 };
 
