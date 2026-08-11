@@ -19,13 +19,22 @@ model user {
   picture     String?
   accounts    account[]
   sessions    session[]
-
+  medias      media[]
+  generations generation[]
+  faces       face[]
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
 }
 
 enum account_type {
   GOOGLE
+}
+enum blur_type{
+    PIXELATE
+  GAUSSIAN 
+  BLACKOUT 
+  ELLIPTICAL
+  MEDIAN 
 }
 
 model account {
@@ -47,6 +56,39 @@ model session {
   ip         String?
   ua         String
   expires_at DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model media {
+    id      String @id @default(cuid())
+  user_id String
+  user    user   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  key     String 
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+}
+
+model face {
+   id      String @id @default(cuid())
+  user_id String
+  user    user   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  key     String 
+  generations generation[]
+  embedding String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+model generation {
+    id      String @id @default(cuid())
+  user_id String
+  user    user   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  key     String 
+  blur_type blur_type
+  face_id String?
+  face   face?   @relation(references: [id], fields: [face_id], onDelete: SetNull)
+  
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
