@@ -6,6 +6,7 @@ import { TRPCError } from "@trpc/server";
 import { face } from "@/generated/prisma/client";
 import { createUploadUrl } from "@/features/s3/get-upload-url";
 import z from "zod";
+import { inngest } from "@/inngest/client";
 const getOutputKeySuffix = (type:generation_type, id:string)=>{
     if(type==="BLUR_PERSON_IMAGE") return `${id}-${type}.png`
     else return `${id}-${type}.mp4`
@@ -45,7 +46,7 @@ export const generateRouter = createTRPCRouter({
         });
         //create face if uploaded
             let face:face|null = null; 
-            if(input.target_image){
+            if(input.target_image_face){
                 const key = userId+"/"+"faces/"+getOutputKeySuffix("BLUR_PERSON_IMAGE", generation.id)
                 const face_media = await prisma.media.create({
                 data:{
@@ -145,6 +146,9 @@ export const generateRouter = createTRPCRouter({
     trigger_generation:protectedProcedure
     .input(z.object({generationId:z.string()}))
     .mutation(async({ctx,input})=>{
-        // trigger inngest job
+    await inngest.send({id:"app/task.generate",name:"app/task.generate",data:{
+        generationId:input.generationId,
+        userId:ctx.session.user.id
+    }})
     })
 })
