@@ -1,4 +1,3 @@
-"use server"
 import { bucket } from "@/constants";
 import { s3 } from "./client";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
@@ -34,7 +33,7 @@ export async function createUploadUrl(
       "Content-Type": contentType,
     },
 
-    Expires: 300,
+    Expires: 60*15,
   });
 
   return {

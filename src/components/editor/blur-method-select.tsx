@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Select,
@@ -6,50 +6,43 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { BlurMethod } from "@/types"
+} from "@/components/ui/select";
+import { useEditor } from "@/store/editor-store";
+import { blur_type } from "@/generated/prisma/enums";
 
+export function BlurMethodSelect() {
+  const { blur_type, setBlurType } = useEditor();
 
-type BlurMethodSelectProps = {
-  value: BlurMethod
-  onValueChange: (value: BlurMethod) => void
-}
-
-export function BlurMethodSelect({
-  value,
-  onValueChange,
-}: BlurMethodSelectProps) {
   return (
     <Select
-      value={value}
-    
-      onValueChange={(value) => onValueChange(value as BlurMethod)}
+      value={blur_type}
+      onValueChange={(value) => setBlurType(value as blur_type)}
     >
       <SelectTrigger className="w-full rounded-lg">
         <SelectValue placeholder="Select blur method" />
       </SelectTrigger>
 
-      <SelectContent className={"w-full"}>
-        <SelectItem value={BlurMethod.PIXELATE}>
+      <SelectContent className="w-full">
+        <SelectItem value="PIXELATE">
           Pixelate
         </SelectItem>
 
-        <SelectItem value={BlurMethod.GAUSSIAN}>
+        <SelectItem value="GAUSSIAN">
           Gaussian
         </SelectItem>
 
-        <SelectItem value={BlurMethod.BLACKOUT}>
+        <SelectItem value="BLACKOUT">
           Blackout
         </SelectItem>
 
-        <SelectItem value={BlurMethod.ELLIPTICAL}>
+        <SelectItem value="ELLIPTICAL">
           Elliptical
         </SelectItem>
 
-        <SelectItem value={BlurMethod.MEDIAN}>
+        <SelectItem value="MEDIAN">
           Median
         </SelectItem>
       </SelectContent>
     </Select>
-  )
+  );
 }

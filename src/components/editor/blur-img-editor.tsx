@@ -19,17 +19,15 @@ const BlurImageEditor = () => {
             </div>
             <img src="image.png"   className=''></img>
         </div>
-         <div className="source-v  py-2 flex flex-col gap-2">
-            <DropzoneCard type='image'/>
-         </div>
+      
            <div className=" py-4 flex flex-col gap-2">
             <p className='font-semibold'>Blur Type</p>
-            <BlurMethodSelect value={BlurMethod.BLACKOUT} onValueChange={()=>{}}/>
+            <BlurMethodSelect />
          </div>
          <div className="target-v py-4 flex flex-col gap-2">
             <p className='font-semibold leading-none'>Keep Unblurred</p>
             <p className='text-xs text-muted-foreground leading-none'>Clear image of the person you want keep unblured(optional)</p>
-            <DropzoneCard type='image'/>
+            <DropzoneCard type='face'/>
          </div>
     </div>
     

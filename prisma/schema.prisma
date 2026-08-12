@@ -67,7 +67,7 @@ model session {
 }
 
 model media {
-    id      String @id @default(cuid())
+  id      String @id @default(cuid())
   user_id String
   user    user   @relation(references: [id], fields: [user_id], onDelete: Cascade)
   key     String 
@@ -81,16 +81,19 @@ model face {
   user_id String
   user    user   @relation(references: [id], fields: [user_id], onDelete: Cascade)
   key     String 
+  media_id String
   generations generation[]
   embedding String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
 model generation {
-    id      String @id @default(cuid())
+  id      String @id @default(cuid())
   user_id String
   user    user   @relation(references: [id], fields: [user_id], onDelete: Cascade)
-  key     String 
+  output_key     String? 
+  input_media_id  String
+  output_media_id  String?
   blur_type blur_type
   generation_type generation_type
   face_id String?

@@ -4,29 +4,34 @@ import { useState } from "react"
 import BlurVideoEditor from "./blur-video-editor"
 import { GenerateButton } from "./generate-button"
 import BlurImageEditor from "./blur-img-editor"
+import { useEditor } from "@/store/editor-store"
+import { generation_type } from "@/generated/prisma/enums"
 
-const tabs = [
+const tabs:{
+  value:generation_type,
+  label:string,
+  component:any
+}[] = [
   {
-    value: "video",
+    value: "BLUR_PERSON",
     label: "Video",
     component: <BlurVideoEditor />,
   },
   {
-    value: "image",
+    value: "BLUR_PERSON_IMAGE",
     label: "Image",
     component:<BlurImageEditor/>,
   },
   {
-    value: "license-plate",
+    value: "BLUR_LICENSE_PLATE",
     label: "License Plate",
     component: null,
   },
 ] as const
 
 const EditorInput = () => {
-  const [active, setActive] = useState<string>(tabs[0].value)
-
-  const activeTab = tabs.find((tab) => tab.value === active)
+  const {setGenerationType,generation_type} = useEditor()
+  const activeTab = tabs.find((tab) => tab.value === generation_type)
 
   return (
     <div className="flex h-full flex-col border overflow-hidden max-w-[300px] rounded-2xl bg-sidebar">
@@ -34,13 +39,13 @@ const EditorInput = () => {
       <div className="shrink-0 border-b border-white/[0.06]">
         <div className="flex items-center justify-between gap-7 px-5">
           {tabs.map((tab) => {
-            const isActive = active === tab.value
+            const isActive = generation_type === tab.value
 
             return (
               <button
                 key={tab.value}
                 type="button"
-                onClick={() => setActive(tab.value)}
+                onClick={() => {setGenerationType(tab.value)}}
                 className={`
                   relative
                   cursor-pointer
