@@ -19,15 +19,13 @@ const BlurVideoEditor = () => {
             </div>
             <video src="12.mp4" muted loop autoPlay className=''></video>
         </div>
-         <div className="source-v  py-2 flex flex-col gap-2">
-            <DropzoneCard type='video'/>
-         </div>
+     
            <div className=" py-4 flex flex-col gap-2">
             <p className='font-semibold'>Blur Type</p>
             <BlurMethodSelect value={BlurMethod.BLACKOUT} onValueChange={()=>{}}/>
          </div>
          <div className="target-v py-4 flex flex-col gap-2">
-            <p className='font-semibold leading-none'>Keep Unblurred</p>
+            <p className='font-semibold leading-none'>Person Image</p>
             <p className='text-xs text-muted-foreground leading-none'>Clear image of the person you want keep unblured(optional)</p>
             <DropzoneCard type='image'/>
          </div>

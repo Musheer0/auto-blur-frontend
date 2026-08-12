@@ -3,73 +3,115 @@
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
-import { Image as ImageIcon, Video as VideoIcon, UploadCloud, X } from "lucide-react";
+import {
+  Image as ImageIcon,
+  Video as VideoIcon,
+  UploadCloud,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEditor } from "@/store/editor-store";
 
 export type DropzoneCardType = "image" | "video";
 
 interface DropzoneCardProps {
-  /** Which kind of media this dropzone accepts */
   type: DropzoneCardType;
-  /** Called with the selected file, or null when it's removed */
-  onUpload?: (file: File | null) => void;
-  /** Controlled value — pass a File (or array) to drive the preview externally */
-  selectedFiles?: File | File[] | null;
-  className?: string;
 }
 
 const ACCEPT_MAP: Record<DropzoneCardType, Record<string, string[]>> = {
-  image: { "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"] },
-  video: { "video/*": [".mp4", ".mov", ".webm", ".avi", ".mkv"] },
+  image: {
+    "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"],
+  },
+  video: {
+    "video/*": [".mp4", ".mov", ".webm", ".avi", ".mkv"],
+  },
 };
 
-const COPY: Record<DropzoneCardType, { title: string; subtitle: string }> = {
-  image: { title: "Upload image", subtitle: "PNG, JPG, GIF or WEBP" },
-  video: { title: "Upload video", subtitle: "MP4, MOV, WEBM or AVI" },
+const COPY: Record<
+  DropzoneCardType,
+  { title: string; subtitle: string }
+> = {
+  image: {
+    title: "Upload image",
+    subtitle: "PNG, JPG, GIF or WEBP",
+  },
+  video: {
+    title: "Upload video",
+    subtitle: "MP4, MOV, WEBM or AVI",
+  },
 };
 
 function formatBytes(bytes: number) {
   if (bytes === 0) return "0 B";
+
   const units = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
   return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
 }
 
-export function DropzoneCard({ type, onUpload, selectedFiles, className }: DropzoneCardProps) {
-  const [file, setFile] = useState<File | null>(null);
+export function DropzoneCard({ type }: DropzoneCardProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Support controlled usage via `selectedFiles`
-  useEffect(() => {
-    if (selectedFiles === undefined) return;
-    const next = Array.isArray(selectedFiles) ? selectedFiles[0] ?? null : selectedFiles;
-    setFile(next);
-  }, [selectedFiles]);
+  const {
+    target_image,
+    target_video,
+    setTargetImage,
+    setTargetVideo,
+  } = useEditor();
 
-  // Build/clean up an object URL for image previews
+  const file = type === "image" ? target_image : target_video;
+
+  // Create image preview
   useEffect(() => {
-    if (!file || type !== "image") {
+    if (!file) {
       setPreviewUrl(null);
       return;
     }
+
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+
     return () => URL.revokeObjectURL(url);
   }, [file, type]);
 
   const onDrop = useCallback(
     (accepted: File[], rejections: FileRejection[]) => {
       if (rejections.length > 0) {
-        setError(rejections[0].errors[0]?.message ?? "That file can't be uploaded.");
+        setError(
+          rejections[0].errors[0]?.message ?? "That file can't be uploaded.",
+        );
         return;
       }
+
       setError(null);
+
       const next = accepted[0] ?? null;
-      setFile(next);
-      onUpload?.(next);
+
+      if (!next) return;
+
+      if (type === "image") {
+        setTargetImage(next);
+      } else {
+        setTargetVideo(next);
+      }
     },
-    [onUpload]
+    [type, setTargetImage, setTargetVideo],
+  );
+
+  const handleRemove = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setError(null);
+
+      if (type === "image") {
+        setTargetImage(null);
+      } else {
+        setTargetVideo(null);
+      }
+    },
+    [type, setTargetImage, setTargetVideo],
   );
 
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
@@ -81,16 +123,6 @@ export function DropzoneCard({ type, onUpload, selectedFiles, className }: Dropz
     noKeyboard: !!file,
   });
 
-  const handleRemove = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setFile(null);
-      setError(null);
-      onUpload?.(null);
-    },
-    [onUpload]
-  );
-
   const { title, subtitle } = COPY[type];
   const TypeIcon = type === "image" ? ImageIcon : VideoIcon;
 
@@ -98,10 +130,9 @@ export function DropzoneCard({ type, onUpload, selectedFiles, className }: Dropz
     <div
       {...getRootProps()}
       className={cn(
-        "relative flex w-full max-w-sm flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card px-6 py-6 text-center outline-none transition-colors",
+        "relative flex w-full h-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card px-6 py-6 text-center outline-none transition-colors",
         isDragActive && "border-primary bg-accent/40",
         !file && "cursor-pointer hover:border-primary/60 hover:bg-accent/20",
-        className
       )}
     >
       <input {...getInputProps()} />
@@ -117,21 +148,29 @@ export function DropzoneCard({ type, onUpload, selectedFiles, className }: Dropz
             <X className="h-3.5 w-3.5" />
           </button>
 
-          {type === "image" && previewUrl ? (
-            <img
-              src={previewUrl}
-              alt={file.name}
-              className="h-28 w-28 rounded-xl object-cover ring-1 ring-border"
-            />
-          ) : (
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted text-foreground">
-              <VideoIcon className="h-6 w-6" />
-            </div>
-          )}
+          {previewUrl && type === "image" ? (
+  <img
+    src={previewUrl}
+    alt={file.name}
+    className="h-32 w-full max-w-xs rounded-xl object-cover ring-1 ring-border"
+  />
+) : previewUrl && type === "video" ? (
+  <video
+    src={previewUrl}
+    controls
+    preload="metadata"
+    className="h-80   rounded-xl object-cover ring-1 ring-border"
+  />
+) : null}
 
           <div className="max-w-full space-y-0.5">
-            <p className="truncate text-sm font-medium text-foreground">{file.name}</p>
-            <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
+            <p className="truncate text-sm font-medium text-foreground">
+              {file.name}
+            </p>
+
+            <p className="text-xs text-muted-foreground">
+              {formatBytes(file.size)}
+            </p>
           </div>
 
           <button
@@ -151,6 +190,7 @@ export function DropzoneCard({ type, onUpload, selectedFiles, className }: Dropz
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-muted text-muted-foreground ring-4 ring-card">
               <TypeIcon className="h-4 w-4" />
             </div>
+
             <div className="z-10 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-foreground ring-4 ring-card">
               <UploadCloud className="h-5 w-5" />
             </div>
@@ -163,7 +203,11 @@ export function DropzoneCard({ type, onUpload, selectedFiles, className }: Dropz
         </>
       )}
 
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && (
+        <p className="text-xs text-destructive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

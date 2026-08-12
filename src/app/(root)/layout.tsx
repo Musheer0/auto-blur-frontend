@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 import EditorLinks from '@/components/links-tab';
 import ReactQueryClientProvider from '@/components/query-client-provider';
 import AuthProvider from '@/components/auth-provider';
+import {Toaster} from 'sonner'
+import { TRPCReactProvider } from '@/trpc/client';
 const h = Host_Grotesk({
     subsets:["latin"]
 })
@@ -16,7 +18,8 @@ const s= Space_Grotesk({
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
    <ReactQueryClientProvider>
-    <AuthProvider>
+   <TRPCReactProvider>
+     <AuthProvider>
       <div suppressHydrationWarning className='flex h-screen  flex-col min-h-screen w-full items-center'>
      <ThemeProvider
             attribute="class"
@@ -25,17 +28,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             disableTransitionOnChange
           >
             <Navbar/>
+            <Toaster className='bg-lime-400 text-background' closeButton theme='dark' richColors/>
               <main className={cn('w-full p-3 flex-1 flex  overflow-y-auto', h.className, s.className)}>
-                  <EditorInput/>
-
+              <EditorInput/>
            <div className="right flex-1 h-full  flex flex-col gap-4 px-3">
              <EditorLinks/>
              {children}
            </div>
               </main>
-          </ThemeProvider>
+     </ThemeProvider>
    </div>
     </AuthProvider>
+   </TRPCReactProvider>
    </ReactQueryClientProvider>
   );
 };

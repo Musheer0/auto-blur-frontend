@@ -37,6 +37,12 @@ enum blur_type{
   MEDIAN 
 }
 
+enum generation_type{
+  BLUR_PERSON
+  BLUR_LICENSE_PLATE
+  BLUR_PERSON_IMAGE
+}
+
 model account {
   id            String   @id @default(cuid())
   user_id       String
@@ -86,6 +92,7 @@ model generation {
   user    user   @relation(references: [id], fields: [user_id], onDelete: Cascade)
   key     String 
   blur_type blur_type
+  generation_type generation_type
   face_id String?
   face   face?   @relation(references: [id], fields: [face_id], onDelete: SetNull)
   
