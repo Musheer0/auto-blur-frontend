@@ -37,7 +37,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Prevent rendering while redirecting
   if (isError || !data) {
-    return null;
+    return <>Error</>;
   }
 
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>;

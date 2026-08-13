@@ -9,7 +9,7 @@ import { useEditor } from "@/store/editor-store";
 import { TRPCClientError } from "@trpc/client";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { playNotificationSound } from "./playnotification-sound";
+import { playErrorSound, playNotificationSound } from "./playnotification-sound";
 import { useGenerationStore } from "@/store/generation-stores";
 
 interface GenerateButtonProps extends React.ComponentProps<typeof Button> {}
@@ -32,8 +32,7 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
   const [loading, setLoading] = React.useState(false);
   const {isComplete,setIsComplete} = useGenerationStore()
   const handleCreate = async () => {
-    playNotificationSound()
-        playNotificationSound()
+   
     setIsComplete(!isComplete)
     if (loading) return;
 
@@ -43,16 +42,19 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
 
     if (generation_type === "BLUR_PERSON_IMAGE" && !target_image) {
       toast.error("Missing image");
+      playErrorSound()
       return;
     }
 
     if (generation_type === "BLUR_PERSON" && !target_video) {
       toast.error("Missing source video");
+      playErrorSound()
       return;
     }
 
     if (!blur_type || !generation_type) {
       toast.error("Invalid configuration, please reload the page");
+      playErrorSound()
       return;
     }
 
@@ -65,6 +67,7 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
       // 1. Create generation
       // -------------------------
 
+       playNotificationSound()
       const data = await mutateAsync({
         blur_type,
         generation_type,
@@ -132,7 +135,7 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
       });
     } catch (error) {
       console.error(error);
-
+      playErrorSound()
       let message = "Error generating video";
 
       if (error instanceof TRPCClientError) {

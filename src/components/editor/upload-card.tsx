@@ -17,7 +17,8 @@ export type DropzoneCardType = "image" | "video" | "face";
 interface DropzoneCardProps {
   type: DropzoneCardType;
 }
-
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 200 * 1024 * 1024;
 const ACCEPT_MAP: Record<DropzoneCardType, Record<string, string[]>> = {
   image: {
     "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"],
@@ -142,6 +143,7 @@ export function DropzoneCard({ type }: DropzoneCardProps) {
     multiple: false,
     noClick: !!file,
     noKeyboard: !!file,
+    maxSize: type==="video" ? MAX_VIDEO_SIZE :MAX_IMAGE_SIZE
   });
 
   const { title, subtitle } = COPY[type];

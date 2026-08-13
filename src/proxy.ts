@@ -26,7 +26,7 @@ export function proxy(req: NextRequest) {
 
   // Prevent logged-in users from visiting auth pages
   if (isAuthRoute && isLoggedIn) {
-    return NextResponse.redirect(new URL("/workflows", req.url));
+    return NextResponse.redirect(new URL("/generate", req.url));
   }
 
   return NextResponse.next();

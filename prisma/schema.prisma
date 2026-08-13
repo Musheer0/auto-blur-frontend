@@ -17,11 +17,27 @@ model user {
   name        String
   email       String       @unique
   picture     String?
+  dodo_customer_id String @default("") @unique
   accounts    account[]
   sessions    session[]
   medias      media[]
   generations generation[]
+  usage     usage?
   faces       face[]
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+}
+enum user_plan {
+  FREE
+  PRO
+}
+model usage {
+  id          String     @id @default(cuid())
+  user_id       String   @unique
+  user          user     @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  no_of_videos_generated  Int @default(0) 
+  allowed_limit Int @default(10)
+  plan      user_plan @default(FREE)
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
 }

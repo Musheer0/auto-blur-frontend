@@ -24,7 +24,7 @@ const useGenerationStatus = (id?: string) => {
             return false;
           }
 
-          return 5000;
+          return 2500;
         },
       }
     )

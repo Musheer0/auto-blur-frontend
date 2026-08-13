@@ -218,22 +218,38 @@ export const generateRouter = createTRPCRouter({
         message: "invalid generation type",
       });
     }),
-  trigger_generation: protectedProcedure
-    .input(z.object({ generationId: z.string() }))
-   
-    .mutation(async ({ ctx, input }) => {
-       console.log('====================================');
-    
-    console.log('====================================');
-      await inngest.send({
-        id: "app/task.generate",
+trigger_generation: protectedProcedure
+  .input(z.object({ generationId: z.string() }))
+  .mutation(async ({ ctx, input }) => {
+    console.log("[trigger_generation] BEFORE SEND", {
+      generationId: input.generationId,
+      userId: ctx.session.user.id,
+    });
+
+    try {
+      const result = await inngest.send({
+        id: input.generationId,
         name: "app/task.generate",
         data: {
           generationId: input.generationId,
           userId: ctx.session.user.id,
         },
       });
-    }),
+
+      console.log("[trigger_generation] AFTER SEND", {
+        generationId: input.generationId,
+        result,
+      });
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.error("[trigger_generation] SEND FAILED", error);
+
+      throw error;
+    }
+  }),
   generation_status: protectedProcedure
     .input(z.object({ generationId: z.string() }))
     .query(async ({ ctx, input }) => {

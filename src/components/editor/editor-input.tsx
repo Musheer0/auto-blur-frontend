@@ -25,7 +25,7 @@ const tabs: {
   {
     value: "BLUR_LICENSE_PLATE",
     label: "License Plate",
-    component: null,
+    component: <><p className="p-2">Soon brother soon...</p></>,
   },
 ] as const;
 

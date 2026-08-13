@@ -11,5 +11,6 @@ export const redisKeys = {
   GENERATION: (id: string, userId: string) => `generation:${id}:user:${userId}`,
   MEDIA: (id: string, userId: string) => `media:${id}:user:${userId}`,
   FACE: (id: string, userId: string) => `face:${id}:user:${userId}`,
-  S3_MEDIA_URL:(key:string)=>`S3_MEDIA:KEY:${key}`
+  S3_MEDIA_URL:(key:string)=>`S3_MEDIA:KEY:${key}`,
+  USAGE:(userId:string)=>`usage:user${userId}`
 };

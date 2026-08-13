@@ -31,12 +31,21 @@ const GenerationOutput = ({ data }: { data: generationType }) => {
 
       <div className="aspect-video overflow-hidden rounded-xl bg-black">
         {data.media_url ? (
-          <video
+        <>
+          {data.generation_type==="BLUR_PERSON_IMAGE" ?
+          <img
+            src={data.media_url}
+            className="h-full w-full object-contain"
+          />
+          :
+            <video
             src={data.media_url}
             controls
             preload="metadata"
             className="h-full w-full object-contain"
-          />
+          />  
+        }
+        </>
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-white/30">
             No output available

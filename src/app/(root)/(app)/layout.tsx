@@ -18,33 +18,14 @@ const s = Space_Grotesk({
 });
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-        
-    <ReactQueryClientProvider>
-      <TRPCReactProvider>
-        <AuthProvider>
-          <div
-            className="flex h-screen  flex-col min-h-screen w-full items-center"
-          >
-              <Navbar />
-              <Toaster
-                closeButton
-                theme="dark"
-                richColors
-              />
-              <main
-                className={cn(
-                  "w-full p-3 flex-1 flex  overflow-y-auto",
-                  h.className,
-                  s.className,
-                )}
-              >
-               {children}
-              </main>
-              <Footer/>
-          </div>
-        </AuthProvider>
-      </TRPCReactProvider>
-    </ReactQueryClientProvider>
+      
+          <>
+               <EditorInput />
+                <div className="right flex-1 h-full  flex flex-col gap-4 px-3">
+                  <EditorLinks />
+                  {children}
+                </div>
+          </>
   );
 };
 

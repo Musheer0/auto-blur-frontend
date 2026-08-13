@@ -5,15 +5,21 @@ import { verifyJwt } from "./jwt";
 import prisma from "@/db";
 import { redis } from "@/db/redis";
 import { redisKeys } from "./redis-keys";
-import { user } from "@/generated/prisma/client";
+import { usage, user } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 
+type UserWithUsage = Prisma.userGetPayload<{
+  include: {
+    usage: true;
+  };
+}>;
 export const getCurrentUser = async () => {
   const c = await cookies();
   const token = c.get(cookie_name);
   if (!token?.value) return null;
   const jwt = verifyJwt(token.value);
   if (!jwt.sessionId) return null;
-  const cached = await redis.get<{ id: string; expires_at: Date; user: user }>(
+  const cached = await redis.get<{ id: string; expires_at: Date; user:user }>(
     redisKeys.SESSION(jwt.userId, jwt.sessionId),
   );
   if (cached) return cached;
@@ -27,6 +33,7 @@ export const getCurrentUser = async () => {
       expires_at: true,
     },
   });
+
   await redis.setex(
     redisKeys.SESSION(jwt.userId, jwt.sessionId),
     60 * 60 * 24,

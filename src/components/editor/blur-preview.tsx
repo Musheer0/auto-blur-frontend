@@ -8,6 +8,7 @@ const BlurPreview = () => {
   const { generation_type } = useEditor();
   return (
     <div className="flex-1 border bg-sidebar rounded-2xl p-2">
+      
       {generation_type !== "BLUR_PERSON_IMAGE" ? (
         <BlurVideoPreview />
       ) : (
