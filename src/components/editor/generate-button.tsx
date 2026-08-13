@@ -3,11 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { uploadToS3 } from "@/features/s3/upload-to-s3";
 import useGenerate from "@/hooks/useGenerate";
+import useGenerationStatus from "@/hooks/useGenerationStatus";
 import useTriggerGeneration from "@/hooks/useTriggerGeneration";
 import { useEditor } from "@/store/editor-store";
 import { TRPCClientError } from "@trpc/client";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
+import { playNotificationSound } from "./playnotification-sound";
+import { useGenerationStore } from "@/store/generation-stores";
 
 interface GenerateButtonProps extends React.ComponentProps<typeof Button> {}
 
@@ -19,14 +22,19 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
     target_video,
     target_image_face,
     face_id,
+    reset
   } = useEditor();
 
   const { mutateAsync } = useGenerate();
   const { mutateAsync: triggerGeneration } = useTriggerGeneration();
-
+  const [generationId , setGenerationId] = useState<string|undefined>(undefined)
+  const {} =useGenerationStatus(generationId)
   const [loading, setLoading] = React.useState(false);
-
+  const {isComplete,setIsComplete} = useGenerationStore()
   const handleCreate = async () => {
+    playNotificationSound()
+        playNotificationSound()
+    setIsComplete(!isComplete)
     if (loading) return;
 
     // -------------------------
@@ -112,7 +120,8 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
       await triggerGeneration({
         generationId: data.generationId,
       });
-
+      reset();
+      setGenerationId(data.generationId);
       // -------------------------
       // Done
       // -------------------------
@@ -168,7 +177,7 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
       `}
     >
       <span>{loading ? "Generating..." : "Generate"}</span>
-
+      
       <div className="flex items-center gap-1">
         <svg width="20" height="20" viewBox="0 0 20 20">
           <path

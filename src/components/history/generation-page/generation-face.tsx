@@ -8,7 +8,7 @@ const GenerationFace = ({ face_id }: { face_id: string }) => {
   const { data, isLoading, isError } = useGetFaceById(face_id)
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#0d0d0d] p-5">
+    <section className="rounded-2xl w-[390px] border border-white/10 bg-[#0d0d0d] p-5">
       <div className="mb-4 flex items-center gap-2">
         <ScanFace className="size-4 text-white/60" />
 
