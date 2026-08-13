@@ -1,27 +1,19 @@
 // proxy.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const authRoutes = [
-  "/auth/google/sign-in",
-  "/auth/callback/google",
-  "/login"
-];
+const authRoutes = ["/auth/google/sign-in", "/auth/callback/google", "/login"];
 
-const protectedRoutes = [
-  "/auth/logout",
-  "/history",
-  "/generate",
-];
+const protectedRoutes = ["/auth/logout", "/history", "/generate"];
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isAuthRoute = authRoutes.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
 
   const isProtectedRoute = protectedRoutes.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
 
   const session = req.cookies.get("autoflow-session")?.value;

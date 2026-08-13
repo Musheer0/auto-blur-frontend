@@ -1,6 +1,6 @@
 "use client";
 
-import {CatIcon, Star, Coffee } from "lucide-react";
+import { CatIcon, Star, Coffee } from "lucide-react";
 
 const X_URL = "https://x.com/musheer_an";
 const GITHUB_PROFILE_URL = "https://github.com/Musheer0";

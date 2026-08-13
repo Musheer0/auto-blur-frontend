@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Folder, BookOpen, Sparkle, SparklesIcon } from "lucide-react"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Folder, BookOpen, Sparkle, SparklesIcon } from "lucide-react";
 
 const links = [
   {
@@ -15,15 +15,15 @@ const links = [
     label: "Generate",
     icon: SparklesIcon,
   },
-]
+];
 
 const EditorLinks = () => {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <div className="flex items-center w-fit gap-1 rounded-xl  bg-[#151617] p-1">
       {links.map(({ href, label, icon: Icon }) => {
-        const isActive = pathname === href
+        const isActive = pathname === href;
 
         return (
           <Link
@@ -40,17 +40,14 @@ const EditorLinks = () => {
               }
             `}
           >
-            <Icon
-              className="size-[19px]"
-              strokeWidth={1.7}
-            />
+            <Icon className="size-[19px]" strokeWidth={1.7} />
 
             <span>{label}</span>
           </Link>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};
 
-export default EditorLinks
+export default EditorLinks;

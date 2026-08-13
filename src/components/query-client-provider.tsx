@@ -10,12 +10,14 @@ const ReactQueryClientProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [isMounted, setIsMounted] = useState(false)
-  useLayoutEffect(()=>{setIsMounted(true)},[])
-  if(isMounted)
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  const [isMounted, setIsMounted] = useState(false);
+  useLayoutEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (isMounted)
+    return (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
 };
 
 export default ReactQueryClientProvider;

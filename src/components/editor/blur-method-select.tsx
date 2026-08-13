@@ -23,25 +23,15 @@ export function BlurMethodSelect() {
       </SelectTrigger>
 
       <SelectContent className="w-full">
-        <SelectItem value="PIXELATE">
-          Pixelate
-        </SelectItem>
+        <SelectItem value="PIXELATE">Pixelate</SelectItem>
 
-        <SelectItem value="GAUSSIAN">
-          Gaussian
-        </SelectItem>
+        <SelectItem value="GAUSSIAN">Gaussian</SelectItem>
 
-        <SelectItem value="BLACKOUT">
-          Blackout
-        </SelectItem>
+        <SelectItem value="BLACKOUT">Blackout</SelectItem>
 
-        <SelectItem value="ELLIPTICAL">
-          Elliptical
-        </SelectItem>
+        <SelectItem value="ELLIPTICAL">Elliptical</SelectItem>
 
-        <SelectItem value="MEDIAN">
-          Median
-        </SelectItem>
+        <SelectItem value="MEDIAN">Median</SelectItem>
       </SelectContent>
     </Select>
   );

@@ -87,6 +87,11 @@ model face {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+enum generationStatus {
+  STARTED
+  FAILED
+  COMPLETED
+}
 model generation {
   id      String @id @default(cuid())
   user_id String
@@ -97,8 +102,11 @@ model generation {
   blur_type blur_type
   generation_type generation_type
   face_id String?
+  status   generationStatus @default(STARTED)
   face   face?   @relation(references: [id], fields: [face_id], onDelete: SetNull)
   
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  @@index([id, user_id,status])
 }

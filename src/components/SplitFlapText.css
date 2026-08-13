@@ -3,7 +3,9 @@
   align-items: center;
   gap: var(--split-flap-gap, 6px);
   color: var(--split-flap-text-color, #f8fafc);
-  font-family: 'SFMono-Regular', 'Roboto Mono', 'Cascadia Code', 'Liberation Mono', Menlo, monospace;
+  font-family:
+    "SFMono-Regular", "Roboto Mono", "Cascadia Code", "Liberation Mono", Menlo,
+    monospace;
   font-size: var(--split-flap-font-size, 52px);
   font-weight: 760;
   line-height: 1;
@@ -20,7 +22,11 @@
   overflow: hidden;
   border-radius: var(--split-flap-radius, 8px);
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.16), transparent 44%),
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(255, 255, 255, 0.16),
+      transparent 44%
+    ),
     linear-gradient(
       180deg,
       color-mix(in srgb, var(--split-flap-tile-color, #111827) 82%, white),
@@ -36,7 +42,7 @@
 }
 
 .split-flap-text__tile::before {
-  content: '';
+  content: "";
   position: absolute;
   z-index: 8;
   top: calc(50% - 0.5px);
@@ -58,7 +64,7 @@
 }
 
 .split-flap-text__tile::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   z-index: 9;
@@ -76,7 +82,8 @@
   height: 50%;
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 34%), var(--split-flap-tile-color, #111827);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 34%),
+    var(--split-flap-tile-color, #111827);
   backface-visibility: hidden;
 }
 
@@ -129,13 +136,15 @@
 
 .split-flap-text__flap--front {
   transform-origin: center bottom;
-  animation: split-flap-front var(--split-flap-flip-duration, 0.12s) cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation: split-flap-front var(--split-flap-flip-duration, 0.12s)
+    cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 .split-flap-text__flap--back {
   transform-origin: center top;
   transform: rotateX(90deg);
-  animation: split-flap-back var(--split-flap-flip-duration, 0.12s) cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation: split-flap-back var(--split-flap-flip-duration, 0.12s)
+    cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 @keyframes split-flap-front {

@@ -39,11 +39,11 @@ export function UserNav() {
     : "U";
 
   const creditsLeft = 0;
-  const plan =  "Free Plan";
+  const plan = "Free Plan";
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger >
+      <DropdownMenuTrigger>
         <button className="rounded-full ring-offset-background transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-lime-400 focus-visible:ring-offset-2">
           <Avatar size="sm" className="ring-2 ring-lime-400/60">
             <AvatarImage
@@ -82,9 +82,7 @@ export function UserNav() {
         {/* Credits */}
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-foreground">
-              Credits
-            </span>
+            <span className="text-sm font-medium text-foreground">Credits</span>
             <span className="text-xs text-muted-foreground flex items-center gap-0.5">
               {creditsLeft} left
               <ChevronRight className="size-3.5" />
@@ -120,7 +118,6 @@ export function UserNav() {
         </div>
 
         <DropdownMenuSeparator className="mx-0 my-0" />
-
 
         <DropdownMenuSeparator className="mx-0 my-0" />
 

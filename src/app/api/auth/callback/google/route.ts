@@ -53,36 +53,36 @@ export const GET = async (req: NextRequest) => {
         },
       });
       if (!user)
-       user = await prisma.user.create({
-        data: {
-          email: data.email!,
-          name: data.name!,
-          picture: data.picture,
-          accounts: {
-            create: {
-              expires_at: new Date(tokens.expiry_date!),
-              refresh_token: "not-found",
-              scope: tokens.scope!,
+        user = await prisma.user.create({
+          data: {
+            email: data.email!,
+            name: data.name!,
+            picture: data.picture,
+            accounts: {
+              create: {
+                expires_at: new Date(tokens.expiry_date!),
+                refresh_token: "not-found",
+                scope: tokens.scope!,
+              },
             },
           },
-        },
-      });
+        });
     }
   } else {
-    user =   await prisma.user.create({
-        data: {
-          email: data.email!,
-          name: data.name!,
-          picture: data.picture,
-          accounts: {
-            create: {
-              expires_at: new Date(tokens.expiry_date!),
-              refresh_token: "not-found",
-              scope: tokens.scope!,
-            },
+    user = await prisma.user.create({
+      data: {
+        email: data.email!,
+        name: data.name!,
+        picture: data.picture,
+        accounts: {
+          create: {
+            expires_at: new Date(tokens.expiry_date!),
+            refresh_token: "not-found",
+            scope: tokens.scope!,
           },
         },
-      });
+      },
+    });
   }
   if (!user)
     return NextResponse.json({ error: "user not found" }, { status: 403 });

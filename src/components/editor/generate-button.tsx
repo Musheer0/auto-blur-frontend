@@ -1,59 +1,56 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { uploadToS3 } from "@/features/s3/upload-to-s3"
-import useGenerate from "@/hooks/useGenerate"
-import useTriggerGeneration from "@/hooks/useTriggerGeneration"
-import { useEditor } from "@/store/editor-store"
-import { TRPCClientError } from "@trpc/client"
-import React from "react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import { uploadToS3 } from "@/features/s3/upload-to-s3";
+import useGenerate from "@/hooks/useGenerate";
+import useTriggerGeneration from "@/hooks/useTriggerGeneration";
+import { useEditor } from "@/store/editor-store";
+import { TRPCClientError } from "@trpc/client";
+import React from "react";
+import { toast } from "sonner";
 
-interface GenerateButtonProps
-  extends React.ComponentProps<typeof Button> {}
+interface GenerateButtonProps extends React.ComponentProps<typeof Button> {}
 
-export function GenerateButton({
-  className,
-  ...props
-}: GenerateButtonProps) {
+export function GenerateButton({ className, ...props }: GenerateButtonProps) {
   const {
     blur_type,
     generation_type,
     target_image,
     target_video,
     target_image_face,
-  } = useEditor()
+    face_id,
+  } = useEditor();
 
-  const { mutateAsync } = useGenerate()
-  const { mutateAsync: triggerGeneration } = useTriggerGeneration()
+  const { mutateAsync } = useGenerate();
+  const { mutateAsync: triggerGeneration } = useTriggerGeneration();
 
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
 
   const handleCreate = async () => {
-    if (loading) return
+    if (loading) return;
 
     // -------------------------
     // Validation
     // -------------------------
 
     if (generation_type === "BLUR_PERSON_IMAGE" && !target_image) {
-      toast.error("Missing image")
-      return
+      toast.error("Missing image");
+      return;
     }
 
     if (generation_type === "BLUR_PERSON" && !target_video) {
-      toast.error("Missing source video")
-      return
+      toast.error("Missing source video");
+      return;
     }
 
     if (!blur_type || !generation_type) {
-      toast.error("Invalid configuration, please reload the page")
-      return
+      toast.error("Invalid configuration, please reload the page");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
 
-    const toastId = toast.loading("Processing...")
+    const toastId = toast.loading("Processing...");
 
     try {
       // -------------------------
@@ -63,45 +60,45 @@ export function GenerateButton({
       const data = await mutateAsync({
         blur_type,
         generation_type,
-
         target_image: target_image?.size ?? null,
         target_image_face: target_image_face?.size ?? null,
         target_video: target_video?.size ?? null,
-      })
+        face_id: face_id || undefined,
+      });
 
       // -------------------------
       // 2. Upload files
       // -------------------------
 
-   const uploads = []
+      const uploads = [];
 
-if (target_video && data.video_upload) {
-  uploads.push({
-    file: target_video,
-    upload: await data.video_upload,
-  })
-}
+      if (target_video && data.video_upload) {
+        uploads.push({
+          file: target_video,
+          upload: await data.video_upload,
+        });
+      }
 
-if (target_image_face && data.face_upload) {
-  uploads.push({
-    file: target_image_face,
-    upload: await data.face_upload,
-  })
-}
+      if (target_image_face && data.face_upload) {
+        uploads.push({
+          file: target_image_face,
+          upload: await data.face_upload,
+        });
+      }
 
-if (target_image && data.image_upload) {
-  uploads.push({
-    file: target_image,
-    upload: await data.image_upload,
-  })
-}
+      if (target_image && data.image_upload) {
+        uploads.push({
+          file: target_image,
+          upload: await data.image_upload,
+        });
+      }
 
       for (const { file, upload } of uploads) {
         toast.loading(`Uploading ${file.name}`, {
           id: toastId,
-        })
+        });
 
-        await uploadToS3(file, upload)
+        await uploadToS3(file, upload);
       }
 
       // -------------------------
@@ -110,11 +107,11 @@ if (target_image && data.image_upload) {
 
       toast.loading("Starting generation...", {
         id: toastId,
-      })
+      });
 
       await triggerGeneration({
         generationId: data.generationId,
-      })
+      });
 
       // -------------------------
       // Done
@@ -122,27 +119,26 @@ if (target_image && data.image_upload) {
 
       toast.success("Generation started", {
         id: toastId,
-        description:
-          "Your video is being generated in the background.",
-      })
+        description: "Your video is being generated in the background.",
+      });
     } catch (error) {
-      console.error(error)
+      console.error(error);
 
-      let message = "Error generating video"
+      let message = "Error generating video";
 
       if (error instanceof TRPCClientError) {
-        message = error.message
+        message = error.message;
       } else if (error instanceof Error) {
-        message = error.message
+        message = error.message;
       }
 
       toast.error(message, {
         id: toastId,
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Button
@@ -171,9 +167,7 @@ if (target_image && data.image_upload) {
         ${className ?? ""}
       `}
     >
-      <span>
-        {loading ? "Generating..." : "Generate"}
-      </span>
+      <span>{loading ? "Generating..." : "Generate"}</span>
 
       <div className="flex items-center gap-1">
         <svg width="20" height="20" viewBox="0 0 20 20">
@@ -188,5 +182,5 @@ if (target_image && data.image_upload) {
         </svg>
       </div>
     </Button>
-  )
+  );
 }

@@ -12,7 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useEditor } from "@/store/editor-store";
 
-export type DropzoneCardType = "image" | "video"|"face";
+export type DropzoneCardType = "image" | "video" | "face";
 
 interface DropzoneCardProps {
   type: DropzoneCardType;
@@ -25,15 +25,12 @@ const ACCEPT_MAP: Record<DropzoneCardType, Record<string, string[]>> = {
   video: {
     "video/*": [".mp4", ".mov", ".webm", ".avi", ".mkv"],
   },
-    face: {
+  face: {
     "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"],
   },
 };
 
-const COPY: Record<
-  DropzoneCardType,
-  { title: string; subtitle: string }
-> = {
+const COPY: Record<DropzoneCardType, { title: string; subtitle: string }> = {
   image: {
     title: "Upload image",
     subtitle: "PNG, JPG, GIF or WEBP",
@@ -42,7 +39,7 @@ const COPY: Record<
     title: "Upload video",
     subtitle: "MP4, MOV, WEBM or AVI",
   },
-   face: {
+  face: {
     title: "Upload image",
     subtitle: "PNG, JPG, GIF or WEBP",
   },
@@ -67,14 +64,18 @@ export function DropzoneCard({ type }: DropzoneCardProps) {
     setTargetImage,
     setTargetVideo,
     target_image_face,
-    setTargetImageFace
+    setTargetImageFace,
   } = useEditor();
 
-  const file = (type === "image") ? target_image : type === "face" ? target_image_face: target_video;
+  const file =
+    type === "image"
+      ? target_image
+      : type === "face"
+        ? target_image_face
+        : target_video;
 
   // Create image preview
   useEffect(() => {
-   
     if (!file) {
       setPreviewUrl(null);
       return;
@@ -98,26 +99,24 @@ export function DropzoneCard({ type }: DropzoneCardProps) {
       setError(null);
 
       const next = accepted[0] ?? null;
- console.log("DROPZONE", {
-  type,
-  target_image,
-  target_image_face,
-  target_video,
-  file,
-});
+      console.log("DROPZONE", {
+        type,
+        target_image,
+        target_image_face,
+        target_video,
+        file,
+      });
       if (!next) return;
 
       if (type === "image") {
         setTargetImage(next);
-      } 
-        else if(type==="face"){
-        setTargetImageFace(next)
-      }
-      else {
+      } else if (type === "face") {
+        setTargetImageFace(next);
+      } else {
         setTargetVideo(next);
       }
     },
-    [type, setTargetImage, setTargetVideo,setTargetImageFace],
+    [type, setTargetImage, setTargetVideo, setTargetImageFace],
   );
 
   const handleRemove = useCallback(
@@ -127,11 +126,9 @@ export function DropzoneCard({ type }: DropzoneCardProps) {
 
       if (type === "image") {
         setTargetImage(null);
-      } 
-      else if(type==="face"){
-        setTargetImageFace(null)
-      }
-      else {
+      } else if (type === "face") {
+        setTargetImageFace(null);
+      } else {
         setTargetVideo(null);
       }
     },
@@ -148,7 +145,7 @@ export function DropzoneCard({ type }: DropzoneCardProps) {
   });
 
   const { title, subtitle } = COPY[type];
-  const TypeIcon =( type === "image"|| type === "face") ? ImageIcon : VideoIcon;
+  const TypeIcon = type === "image" || type === "face" ? ImageIcon : VideoIcon;
 
   return (
     <div
@@ -172,20 +169,20 @@ export function DropzoneCard({ type }: DropzoneCardProps) {
             <X className="h-3.5 w-3.5" />
           </button>
 
-          {previewUrl &&( type === "image" || type === "face" )? (
-  <img
-    src={previewUrl}
-    alt={file.name}
-    className="h-32 w-full max-w-xs rounded-xl object-cover ring-1 ring-border"
-  />
-) : previewUrl && type === "video" ? (
-  <video
-    src={previewUrl}
-    controls
-    preload="metadata"
-    className="h-80   rounded-xl object-cover ring-1 ring-border"
-  />
-) : null}
+          {previewUrl && (type === "image" || type === "face") ? (
+            <img
+              src={previewUrl}
+              alt={file.name}
+              className="h-32 w-full max-w-xs rounded-xl object-cover ring-1 ring-border"
+            />
+          ) : previewUrl && type === "video" ? (
+            <video
+              src={previewUrl}
+              controls
+              preload="metadata"
+              className="h-80   rounded-xl object-cover ring-1 ring-border"
+            />
+          ) : null}
           <div className="max-w-full space-y-0.5">
             <p className="truncate text-sm font-medium text-foreground">
               {file.name}
@@ -226,11 +223,7 @@ export function DropzoneCard({ type }: DropzoneCardProps) {
         </>
       )}
 
-      {error && (
-        <p className="text-xs text-destructive">
-          {error}
-        </p>
-      )}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }

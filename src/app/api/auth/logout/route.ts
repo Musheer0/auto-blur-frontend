@@ -12,7 +12,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.redirect(new URL("/login", req.nextUrl.origin));
   const jwt = verifyJwt(session);
   await prisma.session.delete({ where: { id: jwt.sessionId } });
-  await redis.del(redisKeys.SESSION(jwt.userId,jwt.sessionId))
+  await redis.del(redisKeys.SESSION(jwt.userId, jwt.sessionId));
   const res = NextResponse.redirect(new URL("/login", req.nextUrl.origin));
   res.cookies.delete(cookie_name);
   return res;

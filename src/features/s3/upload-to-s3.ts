@@ -1,15 +1,15 @@
-"use client"
+"use client";
 export async function uploadToS3(
   file: File,
   upload: {
     url: string;
     fields: Record<string, string>;
     maxSize: number;
-  }
+  },
 ) {
   if (file.size > upload.maxSize) {
     throw new Error(
-      `File is too large. Maximum size is ${upload.maxSize / 1024 / 1024} MB`
+      `File is too large. Maximum size is ${upload.maxSize / 1024 / 1024} MB`,
     );
   }
 

@@ -13,8 +13,10 @@ export const getCurrentUser = async () => {
   if (!token?.value) return null;
   const jwt = verifyJwt(token.value);
   if (!jwt.sessionId) return null;
-  const cached  = await redis.get<{id:string,expires_at:Date,user:user}>(redisKeys.SESSION(jwt.userId,jwt.sessionId))
-  if(cached) return cached
+  const cached = await redis.get<{ id: string; expires_at: Date; user: user }>(
+    redisKeys.SESSION(jwt.userId, jwt.sessionId),
+  );
+  if (cached) return cached;
   const sessionWithUser = await prisma.session.findFirst({
     where: {
       id: jwt.sessionId,
@@ -25,6 +27,10 @@ export const getCurrentUser = async () => {
       expires_at: true,
     },
   });
-  await redis.setex(redisKeys.SESSION(jwt.userId,jwt.sessionId),60*60*24,sessionWithUser)
+  await redis.setex(
+    redisKeys.SESSION(jwt.userId, jwt.sessionId),
+    60 * 60 * 24,
+    sessionWithUser,
+  );
   return sessionWithUser;
 };
