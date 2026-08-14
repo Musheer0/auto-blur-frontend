@@ -8,6 +8,7 @@ import { redis } from "@/db/redis";
 import { redisKeys } from "@/lib/redis-keys";
 import { generationStatus } from "@/generated/prisma/enums";
 import { incrementGeneratedCount } from "@/dodo/data";
+import { sendFailureEmail, sendSuccessEmail } from "@/features/autoflow/send-email";
 
 const GENERATION_CACHE_TTL = 60 * 5;
 
@@ -445,6 +446,9 @@ export const startGeneration = inngest.createFunction(
     /**
      * Load the generation and cache its initial state.
      */
+    const user = await  prisma.user.findFirst({where:{id:userId},select:{email:true}})
+    if(!user) throw new NonRetriableError("Invalid user id or user does not exist")
+
     const generation = await getGeneration(context);
 
     /**
@@ -530,7 +534,7 @@ export const startGeneration = inngest.createFunction(
             context,
             "FAILED",
           );
-
+          await sendFailureEmail(user.email)
           throw error;
         }
       },
@@ -554,7 +558,7 @@ export const startGeneration = inngest.createFunction(
       context,
       outputMedia.id,
     );
-
+    await sendSuccessEmail(user.email, generation.id)
     log("info", "Generation pipeline finished", {
       ...context,
       outputMediaId: outputMedia.id,
