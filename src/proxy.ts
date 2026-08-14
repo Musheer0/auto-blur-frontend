@@ -31,7 +31,6 @@ export function proxy(req: NextRequest) {
 
   return NextResponse.next();
 }
-export const runtime = "edge";
 export const config = {
   matcher: ["/:path*"],
 };
