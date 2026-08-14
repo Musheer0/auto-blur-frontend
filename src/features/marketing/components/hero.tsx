@@ -104,7 +104,7 @@ export default function Hero() {
           >
             {/* Original image (full) */}
             <img
-              src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=80"
+              src="/before.png"
               alt="Original, unblurred"
               className="absolute inset-0 h-full w-full object-cover"
               draggable={false}
@@ -115,7 +115,7 @@ export default function Hero() {
               style={{ clipPath: `inset(0 0 0 ${sliderPos}%)` }}
             >
               <img
-                src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1200&q=80"
+                src="/after.png"
                 alt="Blurred, strangers obscured"
                 className="h-full w-full object-cover blur-md"
                 draggable={false}
