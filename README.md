@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blurfield
 
-## Getting Started
+**Blurfield** is a privacy-focused video face-blurring platform. Upload a video or image and Blurfield automatically detects and blurs other people's faces to protect their privacy — while keeping your own face visible.
 
-First, run the development server:
+## How it works
+
+1. Upload a video (or image) containing other people's faces.
+2. Optionally upload a clear photo of your own face.
+3. Blurfield automatically blurs everyone else's faces.
+4. Download the privacy-safe video and share it without exposing bystanders' identities.
+
+If you upload your face image, Blurfield uses it as the identity to preserve: your face stays visible while every other face in the video is blurred.
+
+## Features
+
+- **Video face blurring** — automatically blur faces in videos
+- **Image face blurring** — blur faces in a single image
+- **Keep your face visible** — preserve a selected person's face while blurring everyone else
+- **Generation history** — review and re-access previous results
+- **Media library** — manage all your uploaded media
+- **License plate blurring** — coming soon
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org) (App Router) + TypeScript
+- [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com)
+- [tRPC](https://trpc.io) + [TanStack Query](https://tanstack.com/query)
+- [Prisma](https://www.prisma.io) (PostgreSQL)
+- [Zustand](https://github.com/pmndrs/zustand) for editor state
+- [S3](https://aws.amazon.com/s3/) for uploads
+- [Inngest](https://www.inngest.com) for background generation
+- [Upstash](https://upstash.com) rate limiting
+- [dodo payments](https://dodopayments.com) for subscriptions
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The app requires environment variables for authentication, database, and storage. See `.env` for the expected values.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Script          | Description                       |
+| --------------- | --------------------------------- |
+| `pnpm dev`      | Start the development server      |
+| `pnpm build`    | Create a production build         |
+| `pnpm start`    | Run the production build          |
+| `pnpm lint`     | Lint and type-check with Biome    |
+| `pnpm format`   | Format code with Biome            |
+| `pnpm gen:client` | Regenerate tRPC client APIs     |
