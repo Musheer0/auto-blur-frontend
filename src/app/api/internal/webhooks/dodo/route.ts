@@ -6,15 +6,15 @@ import { createUsage, getUsageByUserId, updateUsagePlan } from "@/dodo/data";
 import { PLAN_LIMITS, PLAN_MAP } from "@/constants";
 
 
-const client = new DodoPayments({
-  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
-  environment: "test_mode",
-  webhookKey: process.env.DODO_WH_SECRET!,
-});
 export  async function GET(){
   return NextResponse.json({})
 }
 export async function POST(req: NextRequest) {
+  const client = new DodoPayments({
+    bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
+    environment: "test_mode",
+    webhookKey: process.env.DODO_WH_SECRET!,
+  });
   try {
     const body = await req.text();
 
