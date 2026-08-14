@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         permanent:false,
         source:"/onboard",
         destination:"/generate"
+      },
+      {
+        permanent:false,
+        source:"/",
+        destination:"/generate"
       }
     ]
   }
