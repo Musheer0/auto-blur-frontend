@@ -1,5 +1,5 @@
 export const cookie_name = "autoflow-session";
-export const bucket = process.env.S3_BUCKET;
+export const bucket = process.env.S3_BUCKET||"blur-video";
 import { user_plan } from "@/generated/prisma/client";
 
 export const PLAN_LIMITS: Record<user_plan, number> = {
@@ -11,4 +11,3 @@ export const PLAN_MAP: Record<user_plan, string|null> = {
   [user_plan.PRO]: process.env.PRODUCT_ID!,
 };
 export const ADDON_LIMIT = 10;
-if (!bucket) throw new Error("missing bucket name");
