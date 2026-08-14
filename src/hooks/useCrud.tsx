@@ -1,6 +1,6 @@
 "use client";
 import { useTRPC } from "@/trpc/client";
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 
 export const useGetGenerationById = (generationID: string) => {
@@ -36,8 +36,14 @@ export const useGetAllMedia = (input: {
   limit?: number;
 }) => {
   const trpc = useTRPC();
-  return useQuery(trpc.crud.getAllMedia.queryOptions(input));
-};
+return useInfiniteQuery(
+    trpc.crud.getAllMedia.infiniteQueryOptions(
+      { limit:10 },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      },
+    ),
+  );};
 
 export const useGetAllFaces = () => {
   const trpc = useTRPC();
@@ -51,7 +57,32 @@ export const useDeleteGenerationById = () => {
 
 export const useDeleteMediaById = () => {
   const trpc = useTRPC();
-  return useMutation(trpc.crud.deleteMediaById.mutationOptions());
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...trpc.crud.deleteMediaById.mutationOptions(),
+
+    onSuccess: (_, variables) => {
+      queryClient.setQueriesData(
+        {
+          queryKey: trpc.crud.getAllMedia.infiniteQueryKey(),
+        },
+        (oldData: any) => {
+          if (!oldData) return oldData;
+
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              items: page.items.filter(
+                (item: any) => item.id !== variables.mediaID
+              ),
+            })),
+          };
+        },
+      );
+    },
+  });
 };
 
 export const useDeleteFaceById = () => {

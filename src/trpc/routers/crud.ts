@@ -153,7 +153,21 @@ export const Crud = createTRPCRouter({
         nextCursor = items[items.length - 1].id;
         items.pop();
       }
-      return { items, nextCursor };
+     const video_types =  [".mp4", ".mov", ".webm", ".avi", ".mkv"]
+      const promises = items .map(async (item) => {
+        const isVideo =video_types.map((v)=>item.key.endsWith(v)).filter((v)=>v!=false).length>0
+          const output_url = await getImageUrl(item.key!);
+          return {
+            id: item.id,
+            media_url: output_url,
+            created_at: item.created_at,
+            user_id:item.user_id,
+            isVideo
+         
+          }})
+              const items_sanitized = await Promise.all(promises);
+
+      return { items:items_sanitized, nextCursor };
     }),
   getAllFaces: protectedProcedure.query(async ({ ctx }) => {
     const faces = await prisma.face.findMany({
