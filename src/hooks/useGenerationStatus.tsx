@@ -33,11 +33,16 @@ const useGenerationStatus = (id?: string) => {
   useEffect(() => {
     
     if (!id || !query.data || notified.current){
+      toast.dismiss()
+      if(id){
+        toast.loading("processing go grab a coffee while we edit your video")
+      }
       return;}
 setIsComplete(true)
     notified.current = true;
     playNotificationSound()
     playNotificationSound()
+    toast.dismiss()
     toast.custom(
       (toastId) => (
         <Link

@@ -10,6 +10,8 @@ import { inngest } from "@/inngest/client";
 import { redis } from "@/db/redis";
 import { redisKeys } from "@/lib/redis-keys";
 import { getFaceById } from "./crud";
+import { canGenerateVideo, decrementGeneratedCount, getUsageByUserId, incrementGeneratedCount } from "@/dodo/data";
+import { checkRateLimit } from "../rate-limit";
 const getOutputKeySuffix = (type: generation_type, id: string) => {
   if (type === "BLUR_PERSON_IMAGE") return `${id}-${type}.png`;
   else return `${id}-${type}.mp4`;
@@ -28,8 +30,14 @@ export const generateRouter = createTRPCRouter({
         throw new TRPCError({ code: "BAD_REQUEST", message: "missing  image" });
       if (input.generation_type !== "BLUR_PERSON_IMAGE" && !input.target_video)
         throw new TRPCError({ code: "BAD_REQUEST", message: "missing  video" });
+      await checkRateLimit("generation",`user:${ctx.session.user.id}`)
       const userId = ctx.session.user.id;
       // blur video excluding target
+      const usage = await getUsageByUserId(userId)
+      if(!usage) throw new TRPCError({code:"BAD_REQUEST", message:"error getting usage please logout and login again"})
+      if(usage?.allowed_limit<=usage?.no_of_videos_generated){
+        throw new TRPCError({code:"PAYMENT_REQUIRED", message:"you have exhausted your limits"})
+      }
       if (input.generation_type === "BLUR_PERSON") {
         //create media for input video
         const media = await prisma.media.create({
@@ -221,12 +229,16 @@ export const generateRouter = createTRPCRouter({
 trigger_generation: protectedProcedure
   .input(z.object({ generationId: z.string() }))
   .mutation(async ({ ctx, input }) => {
-    console.log("[trigger_generation] BEFORE SEND", {
-      generationId: input.generationId,
-      userId: ctx.session.user.id,
-    });
+    
 
     try {
+      const canCreateVideo = await canGenerateVideo(ctx.session.user.id)
+      if(!canCreateVideo) throw new TRPCError({
+        code:"PAYMENT_REQUIRED",
+        message:"you have exhausted your limits"
+      })
+      await incrementGeneratedCount(ctx.session.user.id)
+    await checkRateLimit("generation",`user:${ctx.session.user.id}`)
       const result = await inngest.send({
         id: input.generationId,
         name: "app/task.generate",

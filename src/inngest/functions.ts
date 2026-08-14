@@ -7,6 +7,7 @@ import { blurapi } from "@/lib/backend-client";
 import { redis } from "@/db/redis";
 import { redisKeys } from "@/lib/redis-keys";
 import { generationStatus } from "@/generated/prisma/enums";
+import { incrementGeneratedCount } from "@/dodo/data";
 
 const GENERATION_CACHE_TTL = 60 * 5;
 
@@ -508,6 +509,7 @@ export const startGeneration = inngest.createFunction(
             faceKey: face?.key,
           });
         } catch (error) {
+          await incrementGeneratedCount(userId); //rollback on error
           log("error", "Media generation failed", {
             ...context,
             error:

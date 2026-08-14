@@ -1,11 +1,21 @@
 "use client";
+
 import { useTRPC } from "@/trpc/client";
-import { useMutation } from "@tanstack/react-query";
-import React from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const useGenerate = () => {
   const trpc = useTRPC();
-  return useMutation(trpc.generation.create_generation.mutationOptions());
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...trpc.generation.create_generation.mutationOptions(),
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: trpc.usage.getUsage.queryKey(),
+      });
+    },
+  });
 };
 
 export default useGenerate;

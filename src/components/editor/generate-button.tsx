@@ -31,13 +31,15 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
   const [generationId , setGenerationId] = useState<string|undefined>(undefined)
   const {} =useGenerationStatus(generationId)
   const [loading, setLoading] = React.useState(false);
-  const {isComplete,setIsComplete} = useGenerationStore()
   const {allowed_limit, no_of_videos_generated} = useSubscriptionContext()
-  const canGenerate = allowed_limit<no_of_videos_generated
+  const canGenerate = allowed_limit>=no_of_videos_generated
   const handleCreate = async () => {
    
-    setIsComplete(!isComplete)
-    if (loading || !canGenerate) return;
+    if(!canGenerate) {
+      toast.error("you have exhausted your limit please wait it to reset")
+      return
+    }
+    if (loading ) return;
 
     // -------------------------
     // Validation
@@ -158,7 +160,7 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
   return (
     <Button
       onClick={handleCreate}
-      disabled={loading||canGenerate}
+      disabled={loading||!canGenerate}
       {...props}
       className={`
         h-auto! w-full
