@@ -10,6 +10,7 @@ import AuthProvider from "@/components/auth-provider";
 import { Toaster } from "sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import Footer from "@/components/editor/footer";
+import SubscriptionProvider from "@/components/subscription-provider";
 const h = Host_Grotesk({
   subsets: ["latin"],
 });
@@ -21,8 +22,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         
     <ReactQueryClientProvider>
       <TRPCReactProvider>
+        <SubscriptionProvider>
         <AuthProvider>
-          <div
+            <div
             className="flex h-screen  flex-col min-h-screen w-full items-center"
           >
               <Navbar />
@@ -43,6 +45,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               <Footer/>
           </div>
         </AuthProvider>
+        </SubscriptionProvider>
       </TRPCReactProvider>
     </ReactQueryClientProvider>
   );

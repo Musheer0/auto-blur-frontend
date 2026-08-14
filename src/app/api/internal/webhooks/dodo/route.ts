@@ -4,15 +4,16 @@ import prisma from "@/db";
 import { usage } from "@/generated/prisma/client";
 import { createUsage, getUsageByUserId, updateUsagePlan } from "@/dodo/data";
 import { PLAN_LIMITS, PLAN_MAP } from "@/constants";
-import { redis } from "@/db/redis";
-import { redisKeys } from "@/lib/redis-keys";
+
 
 const client = new DodoPayments({
-  bearerToken: process.env.DODO_API_KEY!,
+  bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
   environment: "test_mode",
-  webhookKey: process.env.DODO_WH!,
+  webhookKey: process.env.DODO_WH_SECRET!,
 });
-
+export  async function GET(){
+  return NextResponse.json({})
+}
 export async function POST(req: NextRequest) {
   try {
     const body = await req.text();
@@ -25,23 +26,24 @@ export async function POST(req: NextRequest) {
       },
     });
     if(event.type==="subscription.active" ||event.type==="subscription.renewed"){
+      
+      //validate data
         const customerId = event.data.customer.customer_id
         const customer = await client.customers.retrieve(customerId);
-        const addons = event.data.addons.map((a)=>{
-            return a.quantity
-        }).reduce((a, b)=>a+b);
         const product_id = event.data.product_id
         const db_user = await prisma.user.findUnique({where:{
             dodo_customer_id:customer.customer_id
         }})
+         console.debug(db_user)
+        //no db users found
         if(!db_user) {
             return NextResponse.json(
-      {
-        success: false,
+        {
+          success: false,
         error: "Customer does not exist",
-      },
-      { status: 400 },
-    );
+        },
+        { status: 400 },
+      );
         }
      let usage:usage|null;
      usage = await getUsageByUserId(db_user.id)
@@ -49,6 +51,7 @@ export async function POST(req: NextRequest) {
         usage = await createUsage({userId:db_user.id, allowedLimit:PLAN_LIMITS.FREE, plan:"FREE"})
      }
      const product = await client.products.retrieve(product_id);
+     console.debug({usage,product})
      if(!product) 
          return NextResponse.json(
       {
@@ -59,7 +62,8 @@ export async function POST(req: NextRequest) {
     );
     if( PLAN_MAP.PRO===product_id){
         console.log(product.name+"subscribed ")
-        await updateUsagePlan(db_user.id, "PRO");
+       const usageP =  await updateUsagePlan(db_user.id, "PRO");
+       console.debug(usageP)
     }
     console.log("Dodo webhook received");
     console.log("Event:", event.type);
@@ -74,7 +78,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: "Invalid webhook",
       },
-      { status: 400 },
+      { status:400 },
     );
   }
 }

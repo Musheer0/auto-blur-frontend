@@ -64,12 +64,12 @@ const GenerationMedia = ({ mediaId }: { mediaId: string }) => {
 
               <MediaInfo
                 label="Created"
-                value={formatDate(data.created_at)}
+                value={formatDate(data.created_at.toDateString())}
               />
 
               <MediaInfo
                 label="Updated"
-                value={formatDate(data.updated_at)}
+                value={formatDate(data.updated_at.toDateString())}
               />
             </div>
 

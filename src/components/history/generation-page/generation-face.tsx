@@ -50,12 +50,12 @@ const GenerationFace = ({ face_id }: { face_id: string }) => {
 
               <FaceInfo
                 label="Created"
-                value={formatDate(data.created_at)}
+                value={formatDate(data.created_at.toDateString())}
               />
 
               <FaceInfo
                 label="Updated"
-                value={formatDate(data.updated_at)}
+                value={formatDate(data.updated_at.toDateString())}
               />
             </div>
 

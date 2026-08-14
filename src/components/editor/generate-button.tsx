@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { playErrorSound, playNotificationSound } from "./playnotification-sound";
 import { useGenerationStore } from "@/store/generation-stores";
+import { useSubscriptionContext } from "../subscription-provider";
 
 interface GenerateButtonProps extends React.ComponentProps<typeof Button> {}
 
@@ -31,10 +32,12 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
   const {} =useGenerationStatus(generationId)
   const [loading, setLoading] = React.useState(false);
   const {isComplete,setIsComplete} = useGenerationStore()
+  const {allowed_limit, no_of_videos_generated} = useSubscriptionContext()
+  const canGenerate = allowed_limit<no_of_videos_generated
   const handleCreate = async () => {
    
     setIsComplete(!isComplete)
-    if (loading) return;
+    if (loading || !canGenerate) return;
 
     // -------------------------
     // Validation
@@ -155,7 +158,7 @@ export function GenerateButton({ className, ...props }: GenerateButtonProps) {
   return (
     <Button
       onClick={handleCreate}
-      disabled={loading}
+      disabled={loading||canGenerate}
       {...props}
       className={`
         h-auto! w-full

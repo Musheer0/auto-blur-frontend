@@ -1,4 +1,5 @@
 // lib/create-google-user.ts
+import { PLAN_LIMITS } from "@/constants";
 import prisma from "@/db";
 import { createDodoCustomer } from "@/dodo/create-customer";
 import { user } from "@/generated/prisma/client";
@@ -35,7 +36,7 @@ export const createGoogleUser = async ({
         },
       },
       usage:{
-        create:{}
+        create:{plan:"FREE",allowed_limit:PLAN_LIMITS.FREE, no_of_videos_generated:0}
       }
     },
   });

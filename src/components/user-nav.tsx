@@ -22,13 +22,15 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { ThemeSwitcher } from "./theme-switcher";
+import { useSubscriptionContext } from "./subscription-provider";
+import SubscribeButton from "./auth/subscribe-button";
 
-const TOTAL_CREDITS = 20;
 
 export function UserNav() {
   const session = useContext(AuthContext);
   const user = session?.user;
-
+  const {allowed_limit ,no_of_videos_generated,plan} = useSubscriptionContext()
+  const TOTAL_CREDITS = allowed_limit;
   const initials = user?.name
     ? user.name
         .split(" ")
@@ -38,8 +40,7 @@ export function UserNav() {
         .slice(0, 2)
     : "U";
 
-  const creditsLeft = 0;
-  const plan = "Free Plan";
+  const creditsLeft = allowed_limit-no_of_videos_generated
 
   return (
     <DropdownMenu>
@@ -101,22 +102,8 @@ export function UserNav() {
           </div>
         </div>
 
-        {/* Go Premium */}
-        <div className="mx-4 mb-3 flex items-center justify-between rounded-xl bg-muted/50 px-3 py-2.5">
-          <div className="flex items-center gap-2">
-            <Crown className="size-4 text-lime-400 fill-lime-400" />
-            <span className="text-sm font-medium text-foreground">
-              Go Premium
-            </span>
-          </div>
-          <Button
-            size="sm"
-            className="h-7 rounded-full bg-lime-400 text-black hover:bg-lime-400/90 px-4 text-xs font-semibold"
-          >
-            Upgrade
-          </Button>
-        </div>
-
+        <SubscribeButton/>
+      
         <DropdownMenuSeparator className="mx-0 my-0" />
 
         <DropdownMenuSeparator className="mx-0 my-0" />
