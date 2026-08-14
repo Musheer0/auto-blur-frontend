@@ -23,15 +23,7 @@ export default function Footer() {
           </span>
         </div>
 
-        {/* Technical note */}
-        <div className="flex items-center gap-2 text-[11px] text-neutral-600">
-          <Volume2 className="size-3.5 text-neutral-500" />
-
-          <span>
-            P.S. Sound effects aren't MP3s — they're generated
-            in real time using the Web Audio API oscillator.
-          </span>
-        </div>
+    
 
         {/* Links */}
         <div className="flex items-center gap-4">
@@ -47,7 +39,7 @@ export default function Footer() {
 
           <span className="h-3.5 w-px bg-white/10" />
  <a
-            href={GITHUB_URL}
+            href={"https://github.com/Musheer0/auto-blur-frontend"}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs text-neutral-500 transition-colors hover:text-lime-400"

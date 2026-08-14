@@ -4,7 +4,7 @@ import { CatIcon, Star, Coffee } from "lucide-react";
 
 const X_URL = "https://x.com/musheer_an";
 const GITHUB_PROFILE_URL = "https://github.com/Musheer0";
-const REPO_URL = "https://github.com/Musheer0";
+const REPO_URL = "https://github.com/Musheer0/auto-blur-frontend";
 const COFFEE_URL = "https://paypal.me/musheer67";
 
 function XIcon(props: React.SVGProps<SVGSVGElement>) {
