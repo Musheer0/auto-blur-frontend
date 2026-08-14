@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
 import HistoryList from "@/components/history/history-list";
 import React from "react";
+
+export const metadata: Metadata = {
+  title: "Generation History",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 const page = () => {
   return (

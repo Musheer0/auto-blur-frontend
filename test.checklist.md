@@ -11,8 +11,8 @@ Inngest retry ✅
 duplicate trigger ✅
 refresh during generation ✅
 close browser during generation ✅
-payment succeeds 
-payment fails
-payment webhook duplicated
-quota exhausted
-rate limit hit
+payment succeeds ✅
+payment fails✅
+payment webhook duplicated✅
+quota exhausted ✅
+rate limit hit✅
