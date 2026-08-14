@@ -32,6 +32,20 @@ If you upload your face image, Blurfield uses it as the identity to preserve: yo
 - [Upstash](https://upstash.com) rate limiting
 - [dodo payments](https://dodopayments.com) for subscriptions
 
+### Backend
+
+The processing backend lives in a separate repo: a [FastAPI](https://fastapi.tiangolo.com) service using [UniFace](https://github.com/yakhyo/uniface) for face detection, recognition, tracking, and blurring, hosted on [Modal](https://modal.com). The frontend talks to it through a type-safe client generated from its OpenAPI spec.
+
+### API client
+
+The TypeScript client is generated from the backend's OpenAPI spec:
+
+```bash
+pnpm gen:client
+```
+
+This fetches `${BACKEND_API_URL}/openapi.json` and writes `src/types/blurfield-api.d.ts` (see `scripts/sync-apis.js`). Set `BACKEND_API_URL` to the deployed Modal app URL.
+
 ## Getting started
 
 ```bash
