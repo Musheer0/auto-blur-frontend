@@ -9,11 +9,11 @@ const nextConfig: NextConfig = {
         source:"/onboard",
         destination:"/generate"
       },
-      {
-        permanent:false,
-        source:"/",
-        destination:"/generate"
-      }
+      // {
+      //   permanent:false,
+      //   source:"/",
+      //   destination:"/generate"
+      // }
     ]
   }
 };
