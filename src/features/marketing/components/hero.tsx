@@ -117,7 +117,7 @@ export default function Hero() {
               <img
                 src="/after.png"
                 alt="Blurred, strangers obscured"
-                className="h-full w-full object-cover blur-md"
+                className="h-full w-full object-cover "
                 draggable={false}
               />
             </div>
