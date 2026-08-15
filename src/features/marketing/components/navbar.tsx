@@ -44,7 +44,7 @@ export default function Navbar() {
           <Button
             className="bg-lime-400 text-neutral-900 hover:bg-lime-300 font-medium rounded-full px-5"
           >
-            <a href="/get-started" className="flex items-center gap-1.5">
+            <a href="/login" className="flex items-center gap-1.5">
               Get started
               <ArrowRight className="h-4 w-4" />
             </a>
